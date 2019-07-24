@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Medical.mapper.StudentMapper">
+<resultMap type="Medical.domain.Student" id="StudentResult">
+<result property="uid" column="U_ID"></result>
+<result property="name" column="name"></result>
+<result property="stuId"   column="stuId"></result>
+<result property="sex"   column="sex"></result>
+<result property="birthday" column="birthday"></result>
+<result property="classes"  column="classes"></result>
+<result property="status" column="status"></result>
+</resultMap>
+        
+         <!-- 分页查询 -->
+		<select id="selectStudentListPage" parameterType="Medical.domain.Student" resultMap="StudentResult">
+				select
+					* 
+					from
+					sys_student
+					
+		  <where>
+		  <if test="searchValue !=null and searchValue !=''">
+		      and name like concat(concat('%',#{searchValue}),"%") </if>
+		  </where>
+					order by U_ID
+		</select>
+
+       
+          <!-- 依据Uid删除 -->
+          <delete id="deleteStudentById"  parameterType="java.lang.String">
+                delete  from sys_student
+        where
+         
+                 U_ID= #{uid}
+     
+          </delete>
+          
+         <!-- 按id搜选 -->
+          <select id="selectStudentListById" parameterType="String" resultMap="StudentResult">
+						      SELECT
+								*
+								FROM
+								sys_student
+								WHERE
+								U_ID=#{uid}
+		</select>
+	
+		<!-- 修改 -->
+		<update id="updateStudent"  parameterType="Medical.domain.Student" >
+		       update sys_student
+		       <set>
+		       <if test="name!=null and name !=''">name = #{name}, </if>
+		      <if test="stuId !=null and stuId !=''">stuId = #{stuId},</if>
+		       <if test="sex !=null and sex !=''">sex = #{sex},</if>
+		       <if test="birthday !=null ">birthday = #{birthday},</if>
+		       <if test="classes !=null and classes !=''"> classes = #{classes},</if>
+				   <if test="status !=null and status !=''"> status = #{status}</if>
+		       		       </set>
+		       		       where U_ID=#{uid}
+		</update>
+		
+	<!-- 新增 -->                                                          
+	    <insert id="insertStudent" parameterType="Medical.domain.Student" useGeneratedKeys="true" keyProperty="uid">
+	       INSERT INTO sys_student ( U_ID, name, stuId, sex, birthday, classes,status )
+							VALUES
+								(#{uid},
+								#{name},
+								#{stuId},
+								#{sex},
+								#{birthday},
+								#{classes},
+								 #{status})
+
+	    
+	    </insert>
+	    
+	    <!-- 批量删除 -->
+	    
+	    <delete id="deleteStudentByIds" parameterType="String">
+	        delete from sys_student where u_id in
+	        <foreach item="uid" collection="array" open="(" separator="," close=")">
+	        #{uid}
+	        </foreach>
+	    </delete>
+	  
+		
+</mapper>

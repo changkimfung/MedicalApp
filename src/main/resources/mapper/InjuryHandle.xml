@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Medical.mapper.InjuryHandleMapper">
+ <resultMap id="InjuryHandleResult" type="Medical.domain.InjuryHandle">
+     <result property="uid" column="U_ID"></result>
+     <result property="stuName"     column="stuName"></result>
+     <result property="stuId"       column="stuId"></result>
+     <result property="classes"     column="classes"></result>
+     <result property="medical"     column="medical"></result>
+     <result property="illness"     column="illness"></result>
+     <result property="docName"       column="docName"></result>
+     <result property="status"       column="status"></result>
+ </resultMap>
+
+    <!--伤病申请分页查询-->
+    <select id="selectInjuryHandleList"     parameterType="Medical.domain.InjuryHandle" resultMap="InjuryHandleResult">
+
+          select *
+          from pre_injury_handle
+          <where>
+              <if test="searchValue !=null and searchValue!=''">
+                  and stuName like concat(concat('%',#{searchValue}),"%")
+              </if>
+          </where>
+    </select>
+
+
+    <!--按照ID查询-->
+    <select id="selectInjuryHandleById"     parameterType="String"   resultMap="InjuryHandleResult">
+
+         select *
+          from pre_injury_handle
+          where U_ID =#{uid}
+
+
+    </select>
+
+    <!--根据uid批量删除-->
+    <delete id="deleteInjuryHandleByIds" parameterType="String">
+        delete from  pre_Injury_Handle
+        where U_id in
+        <foreach collection="array" item="uid" open="("   separator=","     close=")">
+            #{uid}
+        </foreach>
+
+    </delete>
+
+    <!--新增-->
+        <insert id="insertInjuryHandle" parameterType="Medical.domain.InjuryHandle">
+
+           insert into  pre_Injury_Handle
+           (              U_ID,
+
+            <if test="stuName !=null and stuName !=''">stuName,</if>
+            <if test="stuId !=null and stuId !=''">stuId,</if>
+            <if test="classes !=null and classes !=''">classes,</if>
+            <if test="medical !=null and medical !=''">medical,</if>
+            <if test="illness !=null and illness !=''">illness,</if>
+            <if test="docName   !=null and docName !=''">docName,</if>
+            <if test="status !=null and status !=''">status</if>
+           )
+            values
+           (
+            #{uid},
+           <if test="stuName !=null and stuName !=''">#{stuName},</if>
+           <if test="stuId !=null and stuId !=''">#{stuId},</if>
+           <if test="classes !=null and classes !=''">#{classes},</if>
+           <if test="medical !=null and medical !=''">#{medical},</if>
+           <if test="illness !=null and illness !=''">#{illness},</if>
+           <if test="docName   !=null and docName !=''">#{docName},</if>
+            <if test="status !=null and status !=''">#{status}</if>
+           )
+       </insert>
+
+    <!--更新-->
+      <update id="updateInjuryHandle"  parameterType="Medical.domain.InjuryHandle">
+          update pre_Injury_Handle
+          <set>
+              <if test="stuName !=null and stuName !=''">stuName=#{stuName},</if>
+              <if test="stuId !=null and stuId !=''">stuId=#{stuId},</if>
+              <if test="classes !=null and classes !=''">classes=#{classes},</if>
+              <if test="medical !=null and medical !=''">medical=#{medical},</if>
+              <if test="illness !=null and illness !=''">illness=#{illness},</if>
+              <if test="docName   !=null and docName !=''">docName=#{docName},</if>
+              <if test="status   !=null and status !=''">status=#{status}</if>
+          </set>
+
+                where
+                  U_ID=#{uid}
+      </update>
+
+</mapper>

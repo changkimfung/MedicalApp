@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script type="text/javascript">
+
+    function getAjax() {
+
+      if (XMLHttpRequest) {
+        return new XMLHttpRequest();
+      } else if (ActiveXObject) {
+        return new ActiveXObject("Microsoft.XMLHTTP");
+      } else {
+        alert("火星浏览器");
+      }
+    }
+
+    function check() {
+      var username= document.getElementById("username").value;
+      var  xhr=getAjax();
+      xhr.open("Get","/checkName?username="+username);
+      xhr.onreadystatechange=function () {
+        if (xhr.readyState==4&&xhr.status==200){
+          console.debug(xhr.responseText);
+        }
+        xhr.send();
+      }
+    }
+
+  </script>
+</head>
+<body>
+    用户名：  <input type="text" id="username">
+        <br/>
+<button id="check"  onclick="check()">check</button>
+</body>
+</html>

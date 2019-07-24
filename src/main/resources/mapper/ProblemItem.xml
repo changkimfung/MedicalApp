@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Medical.mapper.ProblemItemMapper">
+    <resultMap id="ProblemItemResult" type="Medical.domain.ProblemItem">
+        <result property="uid"  column="U_ID"></result>
+        <result property="code" column="code"></result>
+        <result property="content"  column="content"></result>
+        <result property="answer"   column="answer"></result>
+    </resultMap>
+
+    <!--分页查询-->
+    <select id="selectProblemItemList"  parameterType="Medical.domain.ProblemItem"  resultMap="ProblemItemResult" >
+
+        select * from pre_problemitem
+        <where>
+            <if test="searchValue !=null and searchValue!=''">
+                and content like concat(concat('%',#{searchValue}),"%")
+            </if>
+        </where>
+
+    </select>
+    <!-- 删除-->
+    <delete id="deleteProblemItem"  parameterType="String">
+        delete from  pre_problemitem where u_id in
+        <foreach collection="array" item="item" open="(" separator="," close=")">
+            #{item}
+         </foreach>
+
+    </delete>
+    
+    <!--根据ID查询-->
+      <select id="selectProblemItemById"    parameterType="String" resultMap="ProblemItemResult">
+          select *
+          from pre_problemItem
+          where u_id=#{uid}
+
+      </select>
+    <!--更新-->
+        <update id="updateProblemItem"      parameterType="Medical.domain.ProblemItem">
+            update pre_problemItem
+            <set>
+                <if test="uid !=null and uid !=''">U_ID=#{uid},</if>
+                <if test="code != null and code !=''">code=#{code},</if>
+                <if test="content !=null and content !=''">content=#{content},</if>
+                <if test="answer !=null and answer !=''">answer=#{answer}</if>
+            </set>
+              where U_ID=#{uid}
+        </update>
+
+    <!--新增-->
+        <insert id="insertProblemItem"      parameterType="Medical.domain.ProblemItem">
+            insert into pre_problemItem
+
+            (                   U_ID,
+             <if test="code !=null and code !=''">code,</if>
+             <if test="content !=null and content !=''">content,</if>
+             answer
+            )
+            values
+            (                   #{uid},
+             <if test="code !=null and code !=''">#{code},</if>
+             <if test="content !=null and content !=''">#{content},</if>
+             #{answer}
+            )
+        </insert>
+</mapper>

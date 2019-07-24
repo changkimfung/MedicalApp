@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Medical.mapper.UserMapper">
+<resultMap type="Medical.domain.User" id="UserResult">
+<result property="uid" column="U_ID"></result>
+<result property="username" column="username"></result>
+<result property="password" column="password"></result>
+<result property="userType" column="User_Type"></result>
+</resultMap>
+
+<select id="checkUserNameIsExist" parameterType="String" resultMap="UserResult">
+			
+			SELECT
+				* 
+			FROM
+				sys_user 
+	<where>
+	<if test="username !=null and username !=''">
+		 username=#{username}
+		 </if>
+
+	</where>	
+</select>
+
+<select id="selectUserListPage" parameterType="Medical.domain.User" resultMap="UserResult">
+            select *
+            From
+            Sys_User
+          
+    <where>
+    <if test="searchValue !=null and searchValue != ''">
+        and USERNAME like concat (concat('%',#{searchValue}),"%")
+    </if>
+ 
+    </where>      
+           order by U_ID  
+
+</select>
+		 <!-- 删除 -->
+		  <delete id="DeleteUserById" parameterType="String">
+		      delete from sys_user
+		      where U_id=#{uid}
+		  </delete>
+		  
+		  <!-- 批量删除 -->
+	  <delete id="DeleteUserByIds"  parameterType="String">
+		  delete from sys_user where u_id in 
+		  <foreach item="uid" collection="array" open="(" separator="," close=")">
+		  #{uid}
+	    </foreach>
+	  </delete>
+	  
+	  <!-- update 修改 -->
+	  
+	  <update id="updateUser" parameterType="Medical.domain.User">
+	       update  sys_User
+	       <set>
+	      	        <if test="username !=null and username !=''">username=#{username},</if>
+	       <if test="password !=null and password !=''">password=#{password},</if>
+	       <if test="userType !=null and userType !=''">user_type=#{userType}</if>
+	       </set>
+	       where u_id=#{uid}
+	  </update>
+	  
+	  <!-- 新增 insert -->
+	  
+	    <insert id="insertUser" parameterType="Medical.domain.User" useGeneratedKeys="true" keyProperty="uid" >
+	    	Insert  into sys_user 
+	    	(
+	    	 u_id,
+	    	<if test="username !=null and username !=''">username,</if>
+	    	<if test="password !=null and password !=''">password,</if>
+	    	<if test="userType !=null and userType !=''">User_Type</if>
+	    	)
+	    	values
+	    	(
+	    	#{uid},
+	    	<if test="username !=null and username !=''">#{username},</if>
+	    	<if test="password !=null">#{password},</if>
+	    	<if test="userType !=null and userType !=''">#{userType}</if>
+	    	)
+	    	
+	   
+	   
+	    </insert>
+	  <!-- 根据id查询 -->
+	  <select id="selectUserListById" parameterType="String" resultMap="UserResult">
+	          select * from sys_User
+				<where>
+	       u_id= #{uid}
+
+				</where>
+	  </select>
+
+</mapper>

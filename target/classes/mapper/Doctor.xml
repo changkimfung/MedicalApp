@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Medical.mapper.DoctorMapper">
+    <resultMap type="Medical.domain.Doctor" id="DoctorResult">
+        <result property="uid" column="U_ID"></result>
+        <result property="name" column="name"></result>
+        <result property="code" column="code"></result>
+        <result property="age" column="age"></result>
+        <result property="EmploymentYear" column="EmploymentYear"></result>
+        <result property="sex" column="sex"></result>
+        <result property="EntryDate" column="Entry_Date"></result>
+        <result property="introduction" column="introduction"></result>
+        <result property="status" column="status"></result>
+    </resultMap>
+
+    <!-- 查询 -->
+    <select id="selectDoctorList" parameterType="Medical.domain.Doctor" resultMap="DoctorResult">
+				   SELECT
+					U_ID,
+					NAME,
+					CODE,
+					age,
+					EmploymentYear,
+					sex,
+					Entry_Date,
+					introduction 
+				FROM
+					sys_doctor
+   </select>
+
+    <!-- 分页/模糊查询 -->
+    <select id="selectDoctorListPage" parameterType="Medical.domain.Doctor" resultMap="DoctorResult">
+        SELECT
+        U_ID,
+        NAME,
+        CODE,
+        age,
+        EmploymentYear,
+        sex,
+        Entry_Date,
+        introduction
+        FROM
+        sys_doctor
+        <where>
+            <if test="uid !=null and uid !=''">and U_ID=#{uid}</if>
+            <if test="name !=null and name !=''">and name=#{name}</if>
+            <if test="code !=null and code !=''">and code=#{code}</if>
+            <if test="age !=null and age !=''">and age=#{age}</if>
+            <if test="EmploymentYear !=null and EmploymentYear !=''">and EmploymentYear=#{EmploymentYear}</if>
+            <if test="sex !=null and sex !=''">and sex=#{sex}</if>
+            <if test="EntryDate !=null">and Entry_Date=#{EntryDate}</if>
+            <if test="introduction !=null and introduction !=''">and introduction=#{introduction}</if>
+            <if test="searchValue !=null and searchValue!=''">
+                and name like concat(concat('%',#{searchValue}),"%")
+            </if>
+        </where>
+
+    </select>
+
+    <!-- 删除 -->
+
+    <delete id="deleteDoctorById" parameterType="String">
+        delete from  sys_doctor
+        where u_id=#{uid}
+        
+    </delete>
+
+    <!-- 批量删除 -->
+    <delete id="deleteDoctorByIds" parameterType="String">
+        delete form sys_doctor where u_id in
+        <foreach item="uid" collection="array" open="(" separator="," close=")">
+            #{uid}
+        </foreach>
+    </delete>
+
+
+    <!-- 根据ID查询 -->
+    <select id="selectDoctorById" parameterType="String" resultMap="DoctorResult">
+   	   SELECT
+					U_ID,
+					NAME,
+					CODE,
+					age,
+					EmploymentYear,
+					sex,
+					Entry_Date,
+					introduction 
+				FROM
+					sys_doctor
+     where u_id=#{uid}
+    </select>
+    <!-- 修改 -->
+    <update id="updateDoctor" parameterType="Medical.domain.Doctor">
+        update sys_doctor
+        <set>
+            <if test="name !=null and name !=''">name=#{name},</if>
+            <if test="code !=null and code !=''">code=#{code},</if>
+            <if test="age !=null and age !=''">age=#{age},</if>
+            <if test="EmploymentYear !=null and EmploymentYear !=''">EmploymentYear =#{EmploymentYear},</if>
+            <if test="sex !=null and sex !=''">sex=#{sex},</if>
+            <if test="EntryDate !=null">Entry_Date=#{EntryDate},</if>
+            <if test="introduction !=null and introduction !=''">introduction =#{introduction},</if>
+            status=#{status}
+        </set>
+        where
+        U_ID=#{uid}
+    </update>
+
+    <!-- 新增 -->
+    <insert id="insertDoctor" parameterType="Medical.domain.Doctor">
+
+        Insert into sys_doctor (
+        U_ID,
+        <if test="name !=null and name!=''">name,</if>
+        <if test="code !=null and code!=''">code,</if>
+        <if test="age !=null and age !=''">age,</if>
+        EmploymentYear,
+        <if test="sex !=null and sex !=''">sex,</if>
+        Entry_Date,
+        <if test="introduction !=null and introduction !=''">introduction,</if>
+       status
+        )
+        values
+        (
+        #{uid},
+        <if test="name !=null and name !=''">#{name},</if>
+        <if test="code !=null and code !=''">#{code},</if>
+        <if test="age !=null and age !=''">#{age},</if>
+        #{EmploymentYear},
+        <if test="sex !=null and sex !=''">#{sex},</if>
+        #{EntryDate},
+        <if test="introduction !=null and introduction !=''">#{introduction},</if>
+      #{status}
+        )
+
+    </insert>
+
+</mapper>

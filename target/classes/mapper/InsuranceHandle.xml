@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Medical.mapper.InsuranceHandleMapper">
+  <resultMap id="InsuranceHandleResult" type="Medical.domain.InsuranceHandle">
+    <result property="uid"  column="U_ID"></result>
+    <result property="stuName"  column="stuName"></result>
+    <result property="stuId"    column="stuID"></result>
+    <result property="docName"    column="docName"></result>
+    <result property="insCode"  column="insCode"></result>
+    <result property="status"   column="status"></result>
+</resultMap>
+
+    <!--分页查询-->
+    <select id="selectInsuranceHandleList" parameterType="Medical.domain.InsuranceHandle" resultMap="InsuranceHandleResult">
+
+              select * from   pre_Insurance_Handle
+        <where>
+        <if test="searchValue !=null and searchValue!=''">
+            and stuName like concat(concat('%',#{searchValue}),"%")
+        </if></where>
+    </select>
+
+    <!--按照Id查询-->
+    <select id="selectInsuranceHandleById" parameterType="String" resultMap="InsuranceHandleResult">
+
+                      select * from   pre_Insurance_Handle
+                      where U_ID=#{uid}
+
+    </select>
+
+    <!--批量删除-->
+    <delete id="deleteInsuranceHandle"      parameterType="String">
+        delete  from pre_Insurance_Handle
+        where U_Id in
+        <foreach collection="array" item="uid" open="(" separator=","   close=")">
+            #{uid}
+        </foreach>
+
+    </delete>
+
+
+
+    <!--插入数据-->
+     <insert id="insertInsuranceHandle" parameterType="Medical.domain.InsuranceHandle">
+         insert  into pre_Insurance_Handle
+         (
+            U_ID,
+         <if test="stuName !=null and stuName !=''">stuName,</if>
+         <if test="stuId !=null and stuId !=''">stuId,</if>
+         <if test="insCode !=null and insCode !=''">insCode,</if>
+         <if test="docName   !=null and docName !=''">docName,</if>
+         <if test="status  !=null and status !=''">status</if>
+         )
+         values
+         (
+            #{uid},
+         <if test="stuName !=null and stuName !=''">#{stuName},</if>
+         <if test="stuId !=null and stuId !=''">#{stuId},</if>
+         <if test="insCode !=null and insCode !=''">#{insCode},</if>
+         <if test="docName   !=null and docName !=''">#{docName},</if>
+         <if test="status  !=null and status !=''">#{status}</if>
+         )
+
+     </insert>
+
+    <!--更新-->
+    <update id="updateInsuranceHandle"  parameterType="Medical.domain.InsuranceHandle">
+        update pre_Insurance_Handle
+        <set>
+            <if test="stuName !=null and stuName !=''">stuName=#{stuName},</if>
+            <if test="stuId !=null and stuId !=''">stuId=#{stuId},</if>
+            <if test="insCode !=null and insCode !=''">insCode=#{insCode},</if>
+            <if test="docName   !=null and docName !=''">docName=#{docName},</if>
+            <if test="status !=null and status !=''">status=#{status}</if>
+        </set>
+
+              where U_ID=#{uid}
+    </update>
+</mapper>

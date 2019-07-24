@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Medical.mapper.NumMapper">
+
+  <update id="deleteNum"  parameterType="int" >
+     update pre_Num
+     <set>
+            number =number -1
+     </set>
+  </update>
+
+  <select id="find"  parameterType="int" resultType="int">
+    select number from
+    pre_Num
+  </select>
+
+</mapper>
